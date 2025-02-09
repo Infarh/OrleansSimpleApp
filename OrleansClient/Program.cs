@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -8,14 +9,13 @@ Console.WriteLine("Wait...");
 Console.ReadLine();
 
 var builder = Host.CreateDefaultBuilder(args)
-    .UseOrleansClient(client =>
-    {
-        client.UseLocalhostClustering();
-    })
-    //.ConfigureLogging(logging => logging.AddConsole())
+    .ConfigureHostConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
+    .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
+    .UseOrleansClient(client => client.UseLocalhostClustering())
     .UseConsoleLifetime();
 
 using var host = builder.Build();
+
 await host.StartAsync();
 
 var client = host.Services.GetRequiredService<IClusterClient>();
@@ -32,7 +32,6 @@ Console.WriteLine($"""
 Console.ReadKey();
 
 await host.StopAsync();
-
 
 Console.WriteLine("End.");
 return;

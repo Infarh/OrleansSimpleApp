@@ -5,17 +5,18 @@ namespace OrleansGrains;
 
 public class HelloGrain(ILogger<HelloGrain> Logger) : Grain, IHello
 {
-
-    ValueTask<string> IHello.SayHello(string greeting)
+    async ValueTask<string> IHello.SayHello(string greeting)
     {
         Logger.LogInformation("""
                                SayHello message received: greeting = "{Greeting}"
                                """,
             greeting);
 
-        return ValueTask.FromResult($"""
+        await Task.Delay(3000).ConfigureAwait(false);
 
-                                     Client said: "{greeting}", so HelloGrain says: Hello!
-                                     """);
+        return $"""
+
+                Client said: "{greeting}", so HelloGrain says: Hello!
+                """;
     }
 }
